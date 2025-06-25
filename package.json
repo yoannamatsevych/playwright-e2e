@@ -1,0 +1,20 @@
+{
+  "name": "playwright-e2e-a1",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npm playwright test --ui",
+    "test:traceon": "npx playwright test --trace on",
+    "test:codegen": "npx playwright codegen",
+    "test:smoke": "npx playwright test --grep @smoke"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.53.1",
+    "@types/node": "^24.0.3"
+  }
+}
