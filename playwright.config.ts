@@ -13,7 +13,12 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   timeout: 10000,
+  expect: {// this will override global assertion timeout to be 7,5 seconds
+    timeout: 6000
+  },
   testDir: './tests',
+  snapshotDir: './snapshots',
+  //globalSetup: 'tests/setup/global.setup.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -36,14 +41,47 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    headless: true
+    headless: true,
+    //storageState: './authorization.json'
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "Playwright Demo - Chrome",
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1920, height: 1080 },
+      },
+      testIgnore: ['tests/setup/*ts', 'tests/integration/17-globalSetup.spec.ts']
+    },
+
+    {
+      name: "setup",
+      testMatch: /global\.setup\.ts/,
+      teardown: 'teardown'
+    },
+
+    {
+      name: "teardown",
+      testMatch: /global\.teardown\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1920, height: 1080 },
+        storageState: "./user-data/loginAuth.json",
+      },
+    },
+
+    {
+      name: "loggedIn",
+      // testDir: './regression',
+      testMatch: "**/12-globalSetup.spec.ts",
+      dependencies: ["setup"],
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1920, height: 1080 },
+        storageState: "./user-data/loginAuth.json",
+      },
     },
 
     // {
